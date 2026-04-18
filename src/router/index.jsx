@@ -1,15 +1,16 @@
-import { createBrowserRouter } from 'react-router-dom';
-import App from '../App';
+import { createBrowserRouter } from 'react-router-dom'
+import MainLayout from '../layouts/MainLayout'
+import BoardPage from '../pages/BoardPage'
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <MainLayout />,
+    children: [
+      {
+        index: true,
+        element: <BoardPage />,
+      },
+    ],
   },
-  {
-    path: '/about',
-    element: <div>About Page</div>,
-  },
-]);
-
-export default router;
+])

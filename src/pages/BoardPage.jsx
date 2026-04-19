@@ -1,40 +1,74 @@
+import { useState } from 'react'
 import { Col, Row } from 'antd'
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCorners,
+} from '@dnd-kit/core'
 import BoardColumn from '../components/BoardColumn'
-
-const initialColumns = [
-  {
-    id: 'todo',
-    title: '待处理',
-    tasks: [
-      { id: '1', title: '设计登录页面', priority: 'high', dueDate: '2026-04-25' },
-      { id: '2', title: '编写接口文档', priority: 'medium', dueDate: '2026-04-28' },
-    ],
-  },
-  {
-    id: 'inProgress',
-    title: '进行中',
-    tasks: [
-      { id: '3', title: '实现看板拖拽', priority: 'high', dueDate: '2026-04-20' },
-    ],
-  },
-  {
-    id: 'done',
-    title: '已完成',
-    tasks: [
-      { id: '4', title: '项目初始化', priority: 'low', dueDate: '2026-04-18' },
-    ],
-  },
-]
+import TaskCard from '../components/TaskCard'
+import { useBoardStore } from '../store/useBoardStore'
 
 function BoardPage() {
+  const { columns, moveTask } = useBoardStore()
+  const [activeTask, setActiveTask] = useState(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  )
+
+  const findColumnByTaskId = (taskId) =>
+    columns.find((col) => col.tasks.some((t) => t.id === taskId))
+
+  const handleDragStart = ({ active }) => {
+    const col = findColumnByTaskId(active.id)
+    const task = col?.tasks.find((t) => t.id === active.id)
+    setActiveTask(task || null)
+  }
+
+  const handleDragEnd = ({ active, over }) => {
+    setActiveTask(null)
+    if (!over) return
+
+    const fromCol = findColumnByTaskId(active.id)
+    if (!fromCol) return
+
+    // 拖到列上
+    const toColDirect = columns.find((c) => c.id === over.id)
+    if (toColDirect) {
+      if (fromCol.id !== toColDirect.id) {
+        moveTask(active.id, fromCol.id, toColDirect.id, null)
+      }
+      return
+    }
+
+    // 拖到任务上
+    const toCol = findColumnByTaskId(over.id)
+    if (!toCol) return
+    moveTask(active.id, fromCol.id, toCol.id, over.id)
+  }
+
   return (
-    <Row gutter={16}>
-      {initialColumns.map((col) => (
-        <Col key={col.id} xs={24} sm={8}>
-          <BoardColumn column={col} />
-        </Col>
-      ))}
-    </Row>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <Row gutter={16}>
+        {columns.map((col) => (
+          <Col key={col.id} xs={24} sm={8}>
+            <BoardColumn column={col} />
+          </Col>
+        ))}
+      </Row>
+      <DragOverlay>
+        {activeTask ? <TaskCard task={activeTask} /> : null}
+      </DragOverlay>
+    </DndContext>
   )
 }
 

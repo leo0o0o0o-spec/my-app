@@ -1,44 +1,59 @@
 const express = require('express')
 const cors = require('cors')
+const jwt = require('jsonwebtoken')
 const db = require('./database')
+const authRouter = require('./auth')
 
 const app = express()
 const PORT = 3001
+const JWT_SECRET = 'kanban_secret_2026'
 
 app.use(cors())
 app.use(express.json())
 
+app.use('/api/auth', authRouter)
+
+const authenticate = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1]
+  if (!token) return res.status(401).json({ message: '未登录' })
+  try {
+    req.user = jwt.verify(token, JWT_SECRET)
+    next()
+  } catch {
+    res.status(401).json({ message: 'token无效' })
+  }
+}
+
 // 获取所有列和任务
-app.get('/api/columns', (req, res) => {
-  const columns = db.prepare('SELECT * FROM columns ORDER BY position').all()
-  const result = columns.map((col) => {
-    const tasks = db.prepare('SELECT * FROM tasks WHERE column_id = ? ORDER BY position').all(col.id)
-    return { ...col, tasks }
-  })
+app.get('/api/columns', authenticate, (req, res) => {
+  const columns = db.get('columns').sortBy('position').value()
+  const result = columns.map((col) => ({
+    ...col,
+    tasks: db.get('tasks').filter({ column_id: col.id }).sortBy('position').value(),
+  }))
   res.json(result)
 })
 
 // 新增任务
-app.post('/api/tasks', (req, res) => {
+app.post('/api/tasks', authenticate, (req, res) => {
   const { title, priority, dueDate, columnId } = req.body
   const id = Date.now().toString()
-  const position = db.prepare('SELECT COUNT(*) as count FROM tasks WHERE column_id = ?').get(columnId).count
-  db.prepare(
-    'INSERT INTO tasks (id, title, priority, due_date, column_id, position) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(id, title, priority, dueDate, columnId, position)
+  const position = db.get('tasks').filter({ column_id: columnId }).value().length
+  const newTask = { id, title, priority, due_date: dueDate, column_id: columnId, position }
+  db.get('tasks').push(newTask).write()
   res.json({ id, title, priority, dueDate, columnId })
 })
 
 // 删除任务
-app.delete('/api/tasks/:id', (req, res) => {
-  db.prepare('DELETE FROM tasks WHERE id = ?').run(req.params.id)
+app.delete('/api/tasks/:id', authenticate, (req, res) => {
+  db.get('tasks').remove({ id: req.params.id }).write()
   res.json({ success: true })
 })
 
-// 移动任务（更新所属列）
-app.patch('/api/tasks/:id/move', (req, res) => {
+// 移动任务
+app.patch('/api/tasks/:id/move', authenticate, (req, res) => {
   const { columnId } = req.body
-  db.prepare('UPDATE tasks SET column_id = ? WHERE id = ?').run(columnId, req.params.id)
+  db.get('tasks').find({ id: req.params.id }).assign({ column_id: columnId }).write()
   res.json({ success: true })
 })
 

@@ -1,0 +1,27 @@
+{
+  "columns": [
+    {
+      "id": "todo",
+      "title": "待处理",
+      "position": 0
+    },
+    {
+      "id": "inProgress",
+      "title": "进行中",
+      "position": 1
+    },
+    {
+      "id": "done",
+      "title": "已完成",
+      "position": 2
+    }
+  ],
+  "tasks": [],
+  "users": [
+    {
+      "id": "1776602054078",
+      "username": "20260419",
+      "password": "$2b$10$hqvewi3lyysT/M9SpABsru9HAzVLpfl5Vu34GXAfucxTtavQwUvnC"
+    }
+  ]
+}

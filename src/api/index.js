@@ -4,16 +4,24 @@ const api = axios.create({
   baseURL: 'http://localhost:3001',
 })
 
-// 请求拦截器：可扩展加 token
+// 请求拦截器：自动带上 token
 api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   return config
 })
 
-// 响应拦截器：统一错误处理
+// 响应拦截器：token 失效自动跳转登录
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    console.error('请求错误:', error)
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('username')
+      window.location.href = '/login'
+    }
     return Promise.reject(error)
   }
 )

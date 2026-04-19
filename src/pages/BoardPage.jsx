@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Col, Row } from 'antd'
+import { useEffect, useState } from 'react'
+import { Col, Row, Spin } from 'antd'
 import {
   DndContext,
   DragOverlay,
@@ -13,8 +13,12 @@ import TaskCard from '../components/TaskCard'
 import { useBoardStore } from '../store/useBoardStore'
 
 function BoardPage() {
-  const { columns, moveTask } = useBoardStore()
+  const { columns, loading, fetchColumns, moveTask } = useBoardStore()
   const [activeTask, setActiveTask] = useState(null)
+
+  useEffect(() => {
+    fetchColumns()
+  }, [])
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -32,11 +36,8 @@ function BoardPage() {
   const handleDragEnd = ({ active, over }) => {
     setActiveTask(null)
     if (!over) return
-
     const fromCol = findColumnByTaskId(active.id)
     if (!fromCol) return
-
-    // 拖到列上
     const toColDirect = columns.find((c) => c.id === over.id)
     if (toColDirect) {
       if (fromCol.id !== toColDirect.id) {
@@ -44,11 +45,17 @@ function BoardPage() {
       }
       return
     }
-
-    // 拖到任务上
     const toCol = findColumnByTaskId(over.id)
     if (!toCol) return
     moveTask(active.id, fromCol.id, toCol.id, over.id)
+  }
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: 60 }}>
+        <Spin size="large" tip="加载中..." />
+      </div>
+    )
   }
 
   return (

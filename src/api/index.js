@@ -36,3 +36,15 @@ export const deleteTask = (taskId) =>
 
 export const moveTask = (taskId, columnId) =>
   api.patch(`/api/tasks/${taskId}/move`, { columnId })
+
+// 获取单个任务详情
+export const getTask = async (id) => {
+  const response = await api.get(`/api/tasks/${id}`)
+  return response.data
+}
+
+// 更新任务
+export const updateTask = async (id, data) => {
+  const response = await api.put(`/api/tasks/${id}`, data)
+  return response.data
+}

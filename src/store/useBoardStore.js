@@ -41,21 +41,22 @@ export const useBoardStore = create((set) => ({
   },
 
   // 移动任务
-  moveTask: async (taskId, fromColumnId, toColumnId, overTaskId) => {
-    await moveTask(taskId, toColumnId)
-    set((state) => {
-      const columns = state.columns.map((col) => ({ ...col, tasks: [...col.tasks] }))
-      const fromCol = columns.find((c) => c.id === fromColumnId)
-      const toCol = columns.find((c) => c.id === toColumnId)
-      const taskIndex = fromCol.tasks.findIndex((t) => t.id === taskId)
-      const [task] = fromCol.tasks.splice(taskIndex, 1)
-      if (overTaskId) {
-        const overIndex = toCol.tasks.findIndex((t) => t.id === overTaskId)
-        toCol.tasks.splice(overIndex, 0, task)
-      } else {
-        toCol.tasks.push(task)
-      }
-      return { columns }
-    })
-  },
+ moveTask: async (taskId, fromColumnId, toColumnId, overTaskId) => {
+  if (fromColumnId === toColumnId) return
+  set((state) => {
+    const columns = state.columns.map((col) => ({ ...col, tasks: [...col.tasks] }))
+    const fromCol = columns.find((c) => c.id === fromColumnId)
+    const toCol = columns.find((c) => c.id === toColumnId)
+    const taskIndex = fromCol.tasks.findIndex((t) => t.id === taskId)
+    const [task] = fromCol.tasks.splice(taskIndex, 1)
+    if (overTaskId) {
+      const overIndex = toCol.tasks.findIndex((t) => t.id === overTaskId)
+      toCol.tasks.splice(overIndex, 0, task)
+    } else {
+      toCol.tasks.push(task)
+    }
+    return { columns }
+  })
+  await moveTask(taskId, toColumnId)
+},
 }))

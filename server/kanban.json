@@ -16,7 +16,34 @@
       "position": 2
     }
   ],
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "1776604520348",
+      "title": "完成实习项目",
+      "priority": "high",
+      "due_date": "2026-04-27",
+      "column_id": "inProgress",
+      "position": 0
+    },
+    {
+      "id": "1776788689906",
+      "title": "不知道",
+      "description": "123",
+      "priority": "medium",
+      "due_date": "2026-04-29",
+      "column_id": "done",
+      "position": 0
+    },
+    {
+      "id": "1776789203114",
+      "title": "123",
+      "description": "asd",
+      "priority": "low",
+      "due_date": "2026-04-22",
+      "column_id": "inProgress",
+      "position": 1
+    }
+  ],
   "users": [
     {
       "id": "1776602054078",

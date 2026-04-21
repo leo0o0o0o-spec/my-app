@@ -5,7 +5,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 import TaskCard from './TaskCard'
 import { useBoardStore } from '../store/useBoardStore'
 
-function SortableTaskCard({ task, columnId }) {
+function SortableTaskCard({ task, columnId, onTaskClick }) {
   const {
     attributes,
     listeners,
@@ -20,13 +20,21 @@ function SortableTaskCard({ task, columnId }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.3 : 1,
+    opacity: isDragging ? 0 : 1,
     position: 'relative',
+  }
+
+  const handleCardClick = (e) => {
+    // 阻止事件冒泡，避免触发拖拽
+    e.stopPropagation()
+    if (onTaskClick) {
+      onTaskClick(task)
+    }
   }
 
   return (
     <div ref={setNodeRef} style={style}>
-      <div {...attributes} {...listeners}>
+      <div {...attributes} {...listeners} onClick={handleCardClick}>
         <TaskCard task={task} />
       </div>
       <Popconfirm
@@ -44,7 +52,9 @@ function SortableTaskCard({ task, columnId }) {
             position: 'absolute',
             top: 8,
             right: 8,
+            zIndex: 10,
           }}
+          onClick={(e) => e.stopPropagation()}
         />
       </Popconfirm>
     </div>

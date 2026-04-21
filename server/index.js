@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
@@ -5,8 +6,8 @@ const db = require('./database')
 const authRouter = require('./auth')
 
 const app = express()
-const PORT = 3001
-const JWT_SECRET = 'kanban_secret_2026'
+const PORT = process.env.PORT || 3001
+const JWT_SECRET = process.env.JWT_SECRET || 'kanban_secret_2026'
 
 app.use(cors())
 app.use(express.json())
@@ -34,14 +35,46 @@ app.get('/api/columns', authenticate, (req, res) => {
   res.json(result)
 })
 
+// 获取单个任务详情
+app.get('/api/tasks/:id', authenticate, (req, res) => {
+  const task = db.get('tasks').find({ id: req.params.id }).value()
+  if (!task) return res.status(404).json({ message: '任务不存在' })
+  res.json(task)
+})
+
 // 新增任务
 app.post('/api/tasks', authenticate, (req, res) => {
-  const { title, priority, dueDate, columnId } = req.body
+  const { title, description, priority, dueDate, columnId } = req.body
   const id = Date.now().toString()
   const position = db.get('tasks').filter({ column_id: columnId }).value().length
-  const newTask = { id, title, priority, due_date: dueDate, column_id: columnId, position }
+  const newTask = { 
+    id, 
+    title, 
+    description: description || '', 
+    priority, 
+    due_date: dueDate, 
+    column_id: columnId, 
+    position 
+  }
   db.get('tasks').push(newTask).write()
-  res.json({ id, title, priority, dueDate, columnId })
+  res.json(newTask)
+})
+
+// 更新任务
+app.put('/api/tasks/:id', authenticate, (req, res) => {
+  const { title, description, priority, dueDate } = req.body
+  const task = db.get('tasks').find({ id: req.params.id }).value()
+  if (!task) return res.status(404).json({ message: '任务不存在' })
+  
+  const updatedTask = {
+    ...task,
+    title: title !== undefined ? title : task.title,
+    description: description !== undefined ? description : task.description,
+    priority: priority !== undefined ? priority : task.priority,
+    due_date: dueDate !== undefined ? dueDate : task.due_date,
+  }
+  db.get('tasks').find({ id: req.params.id }).assign(updatedTask).write()
+  res.json(updatedTask)
 })
 
 // 删除任务

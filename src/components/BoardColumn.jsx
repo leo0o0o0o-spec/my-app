@@ -7,7 +7,7 @@ import SortableTaskCard from './SortableTaskCard'
 import TaskModal from './TaskModal'
 import { useBoardStore } from '../store/useBoardStore'
 
-function BoardColumn({ column }) {
+function BoardColumn({ column, onTaskClick }) {
   const { setNodeRef } = useDroppable({ id: column.id })
   const { addTask } = useBoardStore()
   const [modalOpen, setModalOpen] = useState(false)
@@ -60,7 +60,12 @@ function BoardColumn({ column }) {
               />
             ) : (
               column.tasks.map((task) => (
-                <SortableTaskCard key={task.id} task={task} columnId={column.id} />
+                <SortableTaskCard 
+                  key={task.id} 
+                  task={task} 
+                  columnId={column.id}
+                  onTaskClick={onTaskClick}
+                />
               ))
             )}
           </div>

@@ -22,26 +22,67 @@
       "title": "完成实习项目",
       "priority": "high",
       "due_date": "2026-04-27",
-      "column_id": "inProgress",
-      "position": 0
-    },
-    {
-      "id": "1776788689906",
-      "title": "不知道",
-      "description": "123",
-      "priority": "medium",
-      "due_date": "2026-04-29",
       "column_id": "done",
-      "position": 0
+      "position": 0,
+      "description": "12345668782"
     },
     {
-      "id": "1776789203114",
-      "title": "123",
-      "description": "asd",
+      "id": "1776864773088",
+      "title": "abc",
+      "description": "补充任务详情",
       "priority": "low",
       "due_date": "2026-04-22",
+      "column_id": "todo",
+      "position": 0
+    },
+    {
+      "id": "1776866574664",
+      "title": "任务示例",
+      "description": "123456789abcdefg",
+      "priority": "medium",
+      "due_date": "2026-04-30",
       "column_id": "inProgress",
-      "position": 1
+      "position": 0
+    },
+    {
+      "id": "1776866898532",
+      "title": "123456",
+      "description": "asdfghjkl",
+      "priority": "high",
+      "due_date": "2026-04-27",
+      "column_id": "todo",
+      "user_id": "1776602054078",
+      "position": 0
+    },
+    {
+      "id": "1776866935047",
+      "title": "ABC",
+      "description": "",
+      "priority": "medium",
+      "due_date": "2026-04-24",
+      "column_id": "done",
+      "user_id": "1776866464051",
+      "position": 0
+    },
+    {
+      "id": "1776867092702",
+      "title": "示例3",
+      "description": "示例描述3",
+      "priority": "low",
+      "due_date": "2026-04-22",
+      "column_id": "done",
+      "user_id": "1776867010913",
+      "position": 0
+    },
+    {
+      "id": "1776867412691",
+      "title": "示例1",
+      "description": "示例描述1",
+      "priority": "high",
+      "due_date": "2026-04-30",
+      "column_id": "todo",
+      "user_id": "1776867010913",
+      "position": 0
     }
   ],
   "users": [
@@ -49,6 +90,21 @@
       "id": "1776602054078",
       "username": "20260419",
       "password": "$2b$10$hqvewi3lyysT/M9SpABsru9HAzVLpfl5Vu34GXAfucxTtavQwUvnC"
+    },
+    {
+      "id": "1776866464051",
+      "username": "20260422",
+      "password": "$2a$10$U4OfqCp4G5fcY13sDbP1WuUY6.PWNM57kJwmintZTvehtf0S1j.pm"
+    },
+    {
+      "id": "1776867010913",
+      "username": "04222026",
+      "password": "$2a$10$cmtz5EMDfLadAEQCqDbae.kIpBL15dJv746nkgV9mIjpwY/Dfg0b2"
+    },
+    {
+      "id": "1776867366184",
+      "username": "042220262215",
+      "password": "$2a$10$jqQDWumaZ.H2aXsu32Lzi.CnnPkX.miY7tHW1wy//nVpzB6wO3dwC"
     }
   ]
 }

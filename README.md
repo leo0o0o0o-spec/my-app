@@ -1,18 +1,58 @@
-# React + Vite
+# 任务看板系统
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> 一个功能完整的任务管理看板，支持拖拽排序、任务编辑、用户认证等功能。
+
+## 在线地址
+
+- **前端**：https://my-app-alpha-nine-70.vercel.app
+- **后端 API**：https://kanban-api-ryhz.onrender.com
+
 ## 功能演示
 
-![演示](./demo.gif)
-Currently, two official plugins are available:
+![功能演示](./demo.gif)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 技术栈
 
-## React Compiler
+### 前端
+- React 18 + Vite
+- Zustand（状态管理）
+- React Router v6（路由）
+- Ant Design（UI 组件）
+- @dnd-kit（拖拽功能）
+- Axios（HTTP 请求）
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 后端
+- Node.js + Express
+- JWT（用户认证）
+- lowdb（轻量数据库）
 
-## Expanding the ESLint configuration
+## 主要功能
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-  用户注册/登录（JWT 鉴权）
+-  三列看板（待处理/进行中/已完成）
+-  任务拖拽排序（列内 + 跨列）
+-  任务增删改查
+-  任务详情弹窗（标题、描述、优先级、截止日期）
+-  搜索任务 + 优先级筛选
+-  截止日期临近提醒（2天内高亮）
+-  多用户数据隔离（不同账号任务互不可见）
+-  响应式布局（手机/平板/电脑）
+-  性能优化（React.memo + 防抖）
+
+## 本地运行
+
+### 前端
+
+```bash
+git clone https://github.com/leo0o0o0o-spec/my-app.git
+cd my-app
+npm install
+npm run dev
+```
+
+### 后端
+
+```bash
+cd server
+npm install
+npm run dev
